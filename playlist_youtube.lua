@@ -94,7 +94,8 @@ function parse()
     
     page_token = nil
     
-    for line in assert(io.popen(curl, 'r')):lines() do
+    local handle = assert(io.popen(curl, 'r'))
+    for line in handle:lines() do
       page_token = extract_json_value(line, "nextPageToken", page_token)
       title = extract_json_value(line, "title", title)
       if (string.match(line, '"videoId": "')) then
@@ -106,6 +107,7 @@ function parse()
         table.insert(playlist, item)
       end
     end
+    handle:close()
   end
   
   return playlist
