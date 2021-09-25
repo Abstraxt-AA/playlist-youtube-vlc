@@ -44,10 +44,10 @@
 
 --[[
  Modified by Ahmed Yehia (https://github.com/Abstraxt-AA), 2021-09-25:
- The script now relies on cURL being installed on the system instead of youtube-dl, and uses an API
- key to make the calls to Google's Youtube API in order to load playlist information. As such, part
- of the installation process is to replace the placeholder value in the api_key variable with a valid
- Google API key. More info can be found at https://cloud.google.com/docs/authentication/api-keys
+ The script now uses VLC's own stream object to retrieve the playlist, and uses an API key to make the
+ calls to Google's Youtube API in order to load playlist information. As such, part of the installation
+ process is to replace the placeholder value in the api_key variable with a valid Google API key.
+ More info can be found at (https://cloud.google.com/docs/authentication/api-keys)
  --]]
 
 local api_key = 'INSERT_YOUR_API_KEY_HERE'
@@ -85,17 +85,19 @@ function parse()
   local title
 
   while page_token ~= nil do
-    local curl = 'curl "https://content-youtube.googleapis.com/youtube/v3/playlistItems?part=snippet' ..
+    local path = 'https://content-youtube.googleapis.com/youtube/v3/playlistItems?part=snippet' ..
       '&playlist_id=' .. playlist_id ..
       '&key=' .. api_key ..
       '&maxResults=50&fields=pageInfo%2CnextPageToken%2CprevPageToken%2Citems%28'..
       'snippet%2FresourceId%2FvideoId%2Csnippet%2Ftitle%29' ..
-      '&pageToken=' .. page_token .. '"'
-    
+      '&pageToken=' .. page_token
+
     page_token = nil
-    
-    local handle = assert(io.popen(curl, 'r'))
-    for line in handle:lines() do
+
+    local stream = vlc.stream(path)
+    while true do
+      local line = stream:readline()
+      if not line then break end
       page_token = extract_json_value(line, "nextPageToken", page_token)
       title = extract_json_value(line, "title", title)
       if (string.match(line, '"videoId": "')) then
@@ -103,12 +105,11 @@ function parse()
         _, start = string.find(line, '"videoId": "')
         finish = string.find(string.sub(line, start + 1), '"[^"]*$')
         item.path = 'https://www.youtube.com/watch?v=' .. string.sub(line, start + 1, start + finish - 1)
-        item.title = title;
+        item.title = title
         table.insert(playlist, item)
       end
     end
-    handle:close()
   end
-  
+
   return playlist
 end
