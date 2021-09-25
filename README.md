@@ -3,9 +3,8 @@ Lua plugin to parse Youtube playlists
 
 ### Prerequisites and Compatibility
 
-- [cURL](https://curl.se/) should be installed on the operating system.
-- Plugin tested on Windows and Linux (Ubuntu 20.04 Focal Fossa). Should be functional on any operating system that supports VLC and cURL.
-- The plugin may cause an empty command prompt to flash on the screen for every 50 playlist items on Windows. Unfortunately, I do not know how to mitigate it.
+- No prerequisites. Plug and play!
+- Tested on Windows 10 and Linux (Ubuntu 20.04 Focal Fossa).
 
 ### Installation
 
