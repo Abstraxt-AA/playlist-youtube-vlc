@@ -13,3 +13,5 @@ To install the script refer to [this guide.](https://techblogup.com/play-a-youtu
 ### Acknowledgements
 
 Special thanks to Guillaume Le Maout, Kai Gillmann, Aaron Hill, and Matteo Federico Zazzetta for their contributions upon which this version of the plugin is based.
+
+Also special mention to my BDF. .:TAAVN:.
